@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Diagnosa Penyakit Tanaman Padi</title>
+    <style>
+        /* Gaya global untuk seluruh halaman dengan font Comic Sans */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Menggunakan Comic Sans */
+            background-color: #f4f6f9; /* Warna latar belakang yang netral */
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Desain utama untuk container */
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #3498db; /* Menggunakan biru */
+            margin-bottom: 20px;
+        }
+
+        /* Styling untuk checkbox gejala */
+        .gejala {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            padding-left: 10px;
+        }
+
+        .gejala input {
+            margin-right: 10px;
+            transform: scale(1.3);
+        }
+
+        /* Gaya tombol diagnosa */
+        button {
+            background-color: #3498db; /* Menggunakan biru */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Warna biru lebih gelap saat hover */
+        }
+
+        /* Styling untuk hasil diagnosa */
+        .result {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #bdc3c7;
+            display: none;
+            font-size: 1.2rem;
+            color: #34495e;
+        }
+
+        /* Animasi loading */
+        .loading {
+            font-size: 1.2rem;
+            color: #f39c12;
+        }
+
+        /* Desain form responsif */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 90%;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Container untuk seluruh aplikasi -->
+    <div class="container">
+        <h1>Sistem Pakar Diagnosa Penyakit Tanaman Padi</h1>
+        
+        <!-- Formulir gejala yang dapat dipilih -->
+        <form id="diagnosaForm">
+            <p>Pilih gejala yang Anda temui pada tanaman padi:</p>
+            
+            <!-- Daun Menguning -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala1" value="menguning">
+                <label for="gejala1">Daun menguning</label>
+            </div>
+
+            <!-- Layu Cepat -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala2" value="layu">
+                <label for="gejala2">Layu cepat</label>
+            </div>
+
+            <!-- Bercak Basah pada Daun -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala3" value="basah">
+                <label for="gejala3">Bercak basah pada daun</label>
+            </div>
+
+            <!-- Batang Menghitam -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala4" value="hitam">
+                <label for="gejala4">Batang menghitam</label>
+            </div>
+
+            <!-- Tanaman Kerdil -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala5" value="kerdil">
+                <label for="gejala5">Tanaman kerdil</label>
+            </div>
+
+            <!-- Daun Menggulung -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala6" value="menggulung">
+                <label for="gejala6">Daun menggulung</label>
+            </div>
+
+            <!-- Batang Retak -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala7" value="retak">
+                <label for="gejala7">Batang retak</label>
+            </div>
+
+            <!-- Bercak Coklat pada Daun -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala8" value="coklat">
+                <label for="gejala8">Bercak coklat pada daun</label>
+            </div>
+
+            <!-- Akar Busuk -->
+            <div class="gejala">
+                <input type="checkbox" id="gejala9" value="busuk">
+                <label for="gejala9">Akar busuk</label>
+            </div>
+
+            <!-- Tombol untuk diagnosa -->
+            <button type="button" onclick="diagnosa()">Diagnosa</button>
+        </form>
+
+        <!-- Hasil diagnosa yang muncul setelah tombol di klik -->
+        <div id="hasil" class="result"></div>
+        <div id="loading" class="loading" style="display: none;">Memproses...</div>
+    </div>
+
+    <script>
+        // Fungsi untuk melakukan diagnosa berdasarkan gejala yang dipilih
+        function diagnosa() {
+            // Menampilkan animasi loading
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("hasil").style.display = "none";
+
+            // Membuat array untuk menampung gejala yang dipilih
+            const gejala = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => gejala.push(cb.value));
+
+            // Tunggu 2 detik untuk mensimulasikan proses diagnosa
+            setTimeout(function() {
+                let hasil = "Tidak dapat menentukan penyakit berdasarkan gejala yang dipilih.";
+
+                // Menentukan penyakit berdasarkan kombinasi gejala yang dipilih
+                if (gejala.includes("menguning") && gejala.includes("layu") && gejala.includes("basah")) {
+                    hasil = "Penyakit yang terdeteksi: Hawar Daun Bakteri. Solusi: Gunakan pestisida yang mengandung tembaga.";
+                } else if (gejala.includes("hitam")) {
+                    hasil = "Penyakit yang terdeteksi: Busuk Batang. Solusi: Jaga kebersihan sawah dan gunakan fungisida.";
+                } else if (gejala.includes("kerdil") && gejala.includes("menguning")) {
+                    hasil = "Penyakit yang terdeteksi: Tungro. Solusi: Gunakan varietas tahan tungro dan kontrol hama vektor.";
+                } else if (gejala.includes("menggulung") && gejala.includes("retak")) {
+                    hasil = "Penyakit yang terdeteksi: Penggerek Batang. Solusi: Gunakan insektisida dan jaga pola tanam.";
+                } else if (gejala.includes("coklat")) {
+                    hasil = "Penyakit yang terdeteksi: Bercak Daun Coklat. Solusi: Gunakan fungisida berbasis mankozeb.";
+                } else if (gejala.includes("busuk")) {
+                    hasil = "Penyakit yang terdeteksi: Akar Busuk. Solusi: Pastikan drainase baik dan gunakan fungisida sistemik.";
+                }
+
+                // Menampilkan hasil diagnosa
+                const hasilDiv = document.getElementById("hasil");
+                hasilDiv.style.display = "block"; // Menampilkan div hasil
+                hasilDiv.innerHTML = hasil; // Menampilkan teks hasil diagnosa
+
+                // Menghilangkan animasi loading setelah proses selesai
+                document.getElementById("loading").style.display = "none";
+            }, 2000); // Simulasi delay 2 detik
+        }
+    </script>
+</body>
+</html>
